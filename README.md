@@ -10,17 +10,21 @@ To create a secure, role-based monitoring application that tracks MOAs from the 
 
 ---
 
+![image](https://github.com/sairarat/MOAmentum/blob/main/Documentation%20Images/Signin.png)
 ## ✨ Core Features
 
 ### 👥 Multi-Tier Access Control
 * **Student Dashboard:** View-only access to strictly **APPROVED** MOAs. Students see essential contact and location data for active partners.
 * **Faculty/Maintainer Dashboard:** Granted "Maintainer" rights by Admins to Add, Edit, or Soft-Delete MOA entries. Faculty see all active rows but cannot view internal audit trails.
 * **Admin Command Center:** Full visibility of all rows (including deleted ones). Admins manage user permissions, recover soft-deleted entries, and monitor the system-wide Audit Trail.
+* 
 
+![image](https://github.com/sairarat/MOAmentum/blob/main/Documentation%20Images/StudentDashboard.png)
 ### 🔄 MOA Status Lifecycle
 The system tracks the following granular statuses to ensure clear communication:
 * **APPROVED:** Signed by President | On-going notarization | No notarization needed.
 * **PROCESSING:** Awaiting HTE partner signature | Sent to Legal Office for Review | Sent to VPAA/OP for approval.
+![image](https://github.com/sairarat/MOAmentum/blob/main/Documentation%20Images/StaffDashboard.png)
 
 ### 📊 Admin Intelligence & Audit
 * **Real-time Stats:** Dashboard cards showing counts for Active, Under Process, and Expired MOAs.
@@ -29,6 +33,8 @@ The system tracks the following granular statuses to ensure clear communication:
 * **Audit Trail:** Admin-only view of **Who, What, and When**—tracking every insert, edit, and deletion.
 
 ---
+
+![image](https://github.com/sairarat/MOAmentum/blob/main/Documentation%20Images/AdminDashboard.png)
 
 ## 🛠️ Technical Requirements
 
@@ -66,17 +72,12 @@ Follow these steps to set up the environment:
     cd moa-management-system
     ```
 
-3.  **Enter the application folder:**
-    ```bash
-    cd gatekeeper-app
-    ```
-
-4.  **Install dependencies:**
+3.  **Install dependencies:**
     ```bash
     npm install
     ```
 
-5.  **Configure Environment Variables:**
+4.  **Configure Environment Variables:**
     Create a `.env.local` file in the `gatekeeper-app` folder:
     ```env
     NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_id
@@ -89,4 +90,4 @@ Follow these steps to set up the environment:
     ```
 
 ---
-*Developed for New Era University — Ensuring partnership transparency and institutional accountability.*
+*Developed in requirement for Professional Elective 2 MOA Status Management System: New Era University — Ensuring partnership transparency and institutional accountability.*
