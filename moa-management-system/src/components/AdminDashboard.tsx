@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import { UserAuth } from '../context/AuthContext';
-import { logAudit } from './AuditLogger';
+import { logAudit } from './auditLogger';
 import MoaForm from './MoaForm';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -346,7 +346,7 @@ const AdminDashboard = () => {
       {/* MOA Form */}
       {showForm && (
         <MoaForm
-          initial={editTarget ? { ...editTarget, id: editTarget.id } : undefined}
+          initial={editTarget ? { ...editTarget, id: editTarget.id, expiry_date: editTarget.expiry_date ?? undefined } : undefined}
           onSuccess={() => { setShowForm(false); setEditTarget(null); fetchMoas(); fetchAudit(); showToast(editTarget ? 'MOA updated.' : 'MOA created.'); }}
           onCancel={() => { setShowForm(false); setEditTarget(null); }}
         />

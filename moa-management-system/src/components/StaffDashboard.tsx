@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { UserAuth } from '../context/AuthContext';
-import { logAudit } from './AuditLogger';
+import { logAudit } from './auditLogger';
 import MoaForm from './MoaForm';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -208,7 +208,7 @@ const StaffDashboard = () => {
       {/* MOA Form */}
       {showForm && (
         <MoaForm
-          initial={editTarget ? { ...editTarget, id: editTarget.id } : undefined}
+          initial={editTarget ? { ...editTarget, id: editTarget.id, expiry_date: editTarget.expiry_date ?? undefined } : undefined}
           onSuccess={() => { setShowForm(false); setEditTarget(null); fetchMoas(); showToast(editTarget ? 'MOA updated.' : 'MOA created.'); }}
           onCancel={() => { setShowForm(false); setEditTarget(null); }}
         />

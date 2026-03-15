@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';                          // ← fixed: type-only import
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../supabaseClient';
 
@@ -6,8 +7,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signInUser: (email: string, pass: string) => Promise<{success: boolean, user?: User, error?: string}>;
-  signUpNewUser: (email: string, pass: string, fName: string, lName: string) => Promise<{success: boolean, error?: any}>;
+  signInUser: (email: string, pass: string) => Promise<{ success: boolean; user?: User; error?: string }>;
+  signUpNewUser: (email: string, pass: string, fName: string, lName: string) => Promise<{ success: boolean; error?: any }>;
   signInWithGoogle: () => Promise<void>;
   signOutUser: () => Promise<void>;
 }
@@ -15,7 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user,    setUser]    = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,12 +43,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signUpNewUser = async (email: string, password: string, first_name: string, last_name: string) => {
-    const { data, error } = await supabase.auth.signUp({
+    // ← fixed: removed unused `data` destructure — only `error` is needed here
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { first_name, last_name } // This sends names to the SQL trigger
-      }
+        data: { first_name, last_name },
+      },
     });
     if (error) return { success: false, error };
     return { success: true };
