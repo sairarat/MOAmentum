@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { UserAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import neuLogo from '../assets/neu_logo_placeholder.png';
-import neuBg from '../assets/neu-bg-placeholder.jpg';
 
 const Signup = () => {
   const { signUpNewUser } = UserAuth();
@@ -42,7 +41,7 @@ const Signup = () => {
   return (
     <div className="neu-page">
 
-      {/* ── Left branding panel — matches SignIn ── */}
+      {/* ── Left branding panel — matches SignIn green gradient ── */}
       <div
         className="auth-panel-left"
         style={{ background: 'linear-gradient(160deg, #064e3b 0%, #022c22 100%)' }}
@@ -90,50 +89,18 @@ const Signup = () => {
           ))}
         </div>
 
-        {/* Footer */}
+        {/* Footer note */}
         <div style={{ position: 'relative', color: 'rgba(167,243,208,0.3)', fontSize: '0.72rem' }}>
           © {new Date().getFullYear()} New Era University · All rights reserved
         </div>
       </div>
 
       {/* ── Right form panel ── */}
-      <div
-        className="auth-panel-right"
-        style={{ position: 'relative', overflow: 'hidden' }}
-      >
-        {/* Background image — dark + blurred */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `url(${neuBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: 'blur(3px) brightness(0.45)',
-          transform: 'scale(1.05)',
-        }} />
+      <div className="auth-panel-right">
+        <div className="auth-form-container" style={{ maxWidth: '420px' }}>
 
-        {/* Dark vignette */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse at center, rgba(2,8,23,0.15) 0%, rgba(2,8,23,0.45) 100%)',
-        }} />
-
-        {/* Form card */}
-        <div
-          className="auth-form-container"
-          style={{
-            position: 'relative', zIndex: 2,
-            maxWidth: '420px',
-            background: 'rgba(15,23,42,0.82)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            borderRadius: '1.25rem',
-            padding: '2.25rem 2rem',
-            boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
-          }}
-        >
-          <div style={{ marginBottom: '1.75rem' }}>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f1f5f9', margin: '0 0 0.4rem' }}>
+          <div style={{ marginBottom: '2rem' }}>
+            <h1 style={{ fontSize: '1.875rem', fontWeight: 900, color: '#f1f5f9', margin: '0 0 0.5rem' }}>
               Create Account
             </h1>
             <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>
@@ -143,7 +110,7 @@ const Signup = () => {
 
           {error && <div className="neu-error">{error}</div>}
 
-          <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+          <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <div>
                 <label className="neu-label">First Name</label>
@@ -157,32 +124,20 @@ const Signup = () => {
 
             <div>
               <label className="neu-label">Institutional Email</label>
-              <input
-                type="email" required placeholder="yourname@neu.edu.ph"
-                className="neu-input"
-                onChange={set('email')}
-              />
-              <p style={{ marginTop: '0.3rem', fontSize: '0.72rem', color: '#475569' }}>
+              <input type="email" required placeholder="yourname@neu.edu.ph" className="neu-input" onChange={set('email')} />
+              <p style={{ marginTop: '0.375rem', fontSize: '0.72rem', color: '#475569' }}>
                 Must be an @neu.edu.ph address
               </p>
             </div>
 
             <div>
               <label className="neu-label">Password</label>
-              <input
-                type="password" required placeholder="Minimum 6 characters"
-                className="neu-input"
-                onChange={set('password')}
-              />
+              <input type="password" required placeholder="Minimum 6 characters" className="neu-input" onChange={set('password')} />
             </div>
 
             <div>
               <label className="neu-label">Confirm Password</label>
-              <input
-                type="password" required placeholder="Re-enter password"
-                className="neu-input"
-                onChange={set('confirmPassword')}
-              />
+              <input type="password" required placeholder="Re-enter password" className="neu-input" onChange={set('confirmPassword')} />
             </div>
 
             <div style={{ paddingTop: '0.25rem' }}>
@@ -193,12 +148,11 @@ const Signup = () => {
           </form>
 
           <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#475569' }}>
-            Already have an account?{' '}
-            <Link to="/signin" style={{ color: '#34d399', fontWeight: 700 }}>Sign In</Link>
+            Already have an account? <Link to="/signin">Sign In</Link>
           </p>
+
         </div>
       </div>
-
     </div>
   );
 };
