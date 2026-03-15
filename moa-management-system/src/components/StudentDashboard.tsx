@@ -50,7 +50,12 @@ const StudentDashboard = () => {
       .eq('id', user.id).single()
       .then(({ data }) => { if (data) setProfile(data as Profile); });
 
-    // Fetch approved MOAs only — limited column set
+    // Student view rules (strictly enforced):
+    // ✅ Only APPROVED status rows
+    // ✅ Only non-deleted rows (deleted_at IS NULL)
+    // ✅ Limited columns ONLY: partner_name, address, contact_person, contact_email, contact_phone, college_office, effective_date
+    // ❌ No status column (students only see approved — no need to show it)
+    // ❌ No hteid, notes, expiry_date, created_at, deleted_at, or any audit data
     supabase.from('moas')
       .select('id, partner_name, address, contact_person, contact_email, contact_phone, college_office, effective_date')
       .eq('status', 'approved')
@@ -92,8 +97,8 @@ const StudentDashboard = () => {
     m.contact_person?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const th: React.CSSProperties = { padding: '0.7rem 1.25rem', textAlign: 'left', fontSize: '0.68rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em' };
-  const td: React.CSSProperties = { padding: '1rem 1.25rem', borderBottom: '1px solid rgba(30,41,59,0.5)', fontSize: '0.84rem' };
+  const th: React.CSSProperties = { padding: '0.7rem 1.25rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em' };
+  const td: React.CSSProperties = { padding: '1rem 1.25rem', borderBottom: '1px solid rgba(30,41,59,0.5)', fontSize: '0.875rem', color: '#cbd5e1' };
 
   return (
     <div style={{ minHeight: '100vh', background: '#020817', color: '#e2e8f0', display: 'flex' }}>
@@ -180,12 +185,16 @@ const StudentDashboard = () => {
             </div>
           </div>
 
-          {/* Read-only notice */}
-          <div style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)', borderRadius: '0.75rem', padding: '0.65rem 1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span style={{ color: '#60a5fa', fontSize: '0.78rem' }}>
-              <strong>Read-only</strong> view. Only <strong>approved</strong> MOAs are shown. Contact staff for more information.
-            </span>
+          {/* Student View Notice */}
+          <div style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)', borderRadius: '0.75rem', padding: '0.65rem 1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginTop: '0.1rem', flexShrink: 0 }}>
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div style={{ color: '#60a5fa', fontSize: '0.78rem', lineHeight: 1.6 }}>
+              <strong>Student View</strong> — Showing only <strong>approved</strong> MOAs.
+              Pending, draft, expired, and deleted entries are not visible at this access level.
+              Displayed fields are limited to Company, Address, and Contact Details.
+            </div>
           </div>
 
           {/* Search */}
@@ -242,22 +251,22 @@ const StudentDashboard = () => {
                         onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent'; }}
                       >
                         <td style={{ ...td, color: '#f1f5f9', fontWeight: 600 }}>{moa.partner_name}</td>
-                        <td style={{ ...td, color: '#64748b', fontSize: '0.8rem', maxWidth: '200px' }}>
+                        <td style={{ ...td, color: '#cbd5e1', fontSize: '0.875rem', maxWidth: '200px' }}>
                           <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{moa.address || '—'}</span>
                         </td>
                         <td style={{ ...td, fontSize: '0.8rem' }}>
-                          <div style={{ color: '#94a3b8' }}>{moa.contact_person || '—'}</div>
+                          <div style={{ color: '#e2e8f0', fontWeight: 500 }}>{moa.contact_person || '—'}</div>
                           {moa.contact_email && (
-                            <a href={`mailto:${moa.contact_email}`} style={{ color: '#34d399', fontSize: '0.72rem', display: 'block', marginTop: '0.15rem' }}>
+                            <a href={`mailto:${moa.contact_email}`} style={{ color: '#34d399', fontSize: '0.8rem', display: 'block', marginTop: '0.15rem' }}>
                               {moa.contact_email}
                             </a>
                           )}
                           {moa.contact_phone && (
-                            <div style={{ color: '#475569', fontSize: '0.72rem' }}>{moa.contact_phone}</div>
+                            <div style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{moa.contact_phone}</div>
                           )}
                         </td>
-                        <td style={{ ...td, color: '#64748b', fontSize: '0.8rem' }}>{moa.college_office || '—'}</td>
-                        <td style={{ ...td, color: '#475569', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>{fmtDate(moa.effective_date)}</td>
+                        <td style={{ ...td, color: '#cbd5e1', fontSize: '0.875rem' }}>{moa.college_office || '—'}</td>
+                        <td style={{ ...td, color: '#94a3b8', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>{fmtDate(moa.effective_date)}</td>
                       </tr>
                     ))}
                   </tbody>

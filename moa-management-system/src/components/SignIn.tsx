@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { UserAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import neuLogo from '../assets/neu_logo_placeholder.png';
+import neuBg from '../assets/neu-bg-placeholder.jpg';
 
 const Signin = () => {
   const { signInUser, signInWithGoogle } = UserAuth();
@@ -25,30 +27,32 @@ const Signin = () => {
 
   return (
     <div className="neu-page">
+
       {/* ── Left branding panel ── */}
       <div
         className="auth-panel-left"
         style={{ background: 'linear-gradient(160deg, #064e3b 0%, #022c22 100%)' }}
       >
+        {/* Dot grid texture */}
         <div style={{
           position: 'absolute', inset: 0, opacity: 0.07,
           backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
-          backgroundSize: '28px 28px'
+          backgroundSize: '28px 28px',
         }} />
 
+        {/* Logo + wordmark */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{
-            width: '2.25rem', height: '2.25rem', background: 'rgba(255,255,255,0.15)',
-            borderRadius: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-          </div>
-          <span style={{ color: 'white', fontWeight: 800, fontSize: '1rem' }}>NEU MOA Management System</span>
+          <img
+            src={neuLogo}
+            alt="NEU Logo"
+            style={{ width: '2.5rem', height: '2.5rem', objectFit: 'contain', borderRadius: '0.5rem' }}
+          />
+          <span style={{ color: 'white', fontWeight: 800, fontSize: '1rem' }}>
+            NEU MOA Management System
+          </span>
         </div>
 
+        {/* Headline */}
         <div style={{ position: 'relative' }}>
           <h2 style={{ color: 'white', fontSize: '2.25rem', fontWeight: 900, lineHeight: 1.2, margin: '0 0 1rem' }}>
             Memorandum of<br />Agreement Online Portal
@@ -58,6 +62,7 @@ const Signin = () => {
           </p>
         </div>
 
+        {/* Feature list */}
         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
           {[
             { icon: '🔒', text: 'Institutional domain-restricted access' },
@@ -73,10 +78,42 @@ const Signin = () => {
       </div>
 
       {/* ── Right form panel ── */}
-      <div className="auth-panel-right">
-        <div className="auth-form-container">
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h1 style={{ fontSize: '1.875rem', fontWeight: 900, color: '#f1f5f9', margin: '0 0 0.5rem' }}>
+      <div
+        className="auth-panel-right"
+        style={{ position: 'relative', overflow: 'hidden' }}
+      >
+        {/* Background image — dark + blurred */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${neuBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(3px) brightness(0.45)',
+          transform: 'scale(1.05)', // prevents blur edge bleed
+        }} />
+
+        {/* Subtle dark vignette over the bg */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse at center, rgba(2,8,23,0.15) 0%, rgba(2,8,23,0.45) 100%)',
+        }} />
+
+        {/* Form card — sits above the background */}
+        <div
+          className="auth-form-container"
+          style={{
+            position: 'relative', zIndex: 2,
+            background: 'rgba(15,23,42,0.82)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: '1.25rem',
+            padding: '2.25rem 2rem',
+            boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
+          }}
+        >
+          <div style={{ marginBottom: '2rem' }}>
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f1f5f9', margin: '0 0 0.4rem' }}>
               Welcome back
             </h1>
             <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>
@@ -89,11 +126,19 @@ const Signin = () => {
           <form onSubmit={handleEmailLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
             <div>
               <label className="neu-label">Email Address</label>
-              <input type="email" required placeholder="yourname@neu.edu.ph" className="neu-input" onChange={e => setEmail(e.target.value)} />
+              <input
+                type="email" required placeholder="yourname@neu.edu.ph"
+                className="neu-input"
+                onChange={e => setEmail(e.target.value)}
+              />
             </div>
             <div>
               <label className="neu-label">Password</label>
-              <input type="password" required placeholder="••••••••" className="neu-input" onChange={e => setPassword(e.target.value)} />
+              <input
+                type="password" required placeholder="••••••••"
+                className="neu-input"
+                onChange={e => setPassword(e.target.value)}
+              />
             </div>
             <div style={{ paddingTop: '0.25rem' }}>
               <button type="submit" className="neu-btn-primary" disabled={loading}>
@@ -116,11 +161,13 @@ const Signin = () => {
             </button>
           </div>
 
-          <p style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: '#475569' }}>
-            Don't have an account? <Link to="/signup">Sign Up</Link>
+          <p style={{ marginTop: '1.75rem', textAlign: 'center', fontSize: '0.875rem', color: '#475569' }}>
+            Don't have an account?{' '}
+            <Link to="/signup" style={{ color: '#34d399', fontWeight: 700 }}>Sign Up</Link>
           </p>
         </div>
       </div>
+
     </div>
   );
 };
