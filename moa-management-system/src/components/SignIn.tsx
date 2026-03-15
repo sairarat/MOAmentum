@@ -4,8 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import neuLogo from '../assets/neu_logo_placeholder.png';
 import neuBg from '../assets/neu-bg-placeholder.jpg';
 
-// ── Eye icons ──────────────────────────────────────────────────────────────
-
 const EyeOpen = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -21,15 +19,13 @@ const EyeOff = () => (
   </svg>
 );
 
-// ── Component ──────────────────────────────────────────────────────────────
-
 const Signin = () => {
   const { signInUser, signInWithGoogle } = UserAuth();
-  const [email,       setEmail]       = useState('');
-  const [password,    setPassword]    = useState('');
-  const [showPass,    setShowPass]    = useState(false);
-  const [loading,     setLoading]     = useState(false);
-  const [error,       setError]       = useState('');
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+  const [loading,  setLoading]  = useState(false);
+  const [error,    setError]    = useState('');
   const navigate = useNavigate();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
@@ -45,13 +41,13 @@ const Signin = () => {
     setLoading(false);
   };
 
-  const toggleBtnStyle: React.CSSProperties = {
+  const eyeBtn: React.CSSProperties = {
     position: 'absolute', right: '0.75rem', top: '50%',
     transform: 'translateY(-50%)',
     background: 'transparent', border: 'none',
     color: '#475569', cursor: 'pointer', padding: '0.25rem',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    borderRadius: '0.25rem', lineHeight: 1,
+    borderRadius: '0.25rem', lineHeight: 1, zIndex: 5,
     transition: 'color 0.15s',
   };
 
@@ -67,11 +63,15 @@ const Signin = () => {
           position: 'absolute', inset: 0, opacity: 0.07,
           backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
           backgroundSize: '28px 28px',
+          pointerEvents: 'none',
         }} />
 
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src={neuLogo} alt="NEU Logo" style={{ width: '2.5rem', height: '2.5rem', objectFit: 'contain', borderRadius: '0.5rem' }} />
-          <span style={{ color: 'white', fontWeight: 800, fontSize: '1rem' }}>NEU MOA Management System</span>
+          <img src={neuLogo} alt="NEU Logo"
+            style={{ width: '2.5rem', height: '2.5rem', objectFit: 'contain', borderRadius: '0.5rem' }} />
+          <span style={{ color: 'white', fontWeight: 800, fontSize: '1rem' }}>
+            NEU MOA Management System
+          </span>
         </div>
 
         <div style={{ position: 'relative' }}>
@@ -100,22 +100,24 @@ const Signin = () => {
       {/* ── Right form panel ── */}
       <div className="auth-panel-right" style={{ position: 'relative', overflow: 'hidden' }}>
 
-        {/* Background image */}
+        {/* Layer 1 — blurred bg image */}
         <div style={{
-          position: 'absolute', inset: 0,
+          position: 'absolute', inset: 0, zIndex: 0,
           backgroundImage: `url(${neuBg})`,
           backgroundSize: 'cover', backgroundPosition: 'center',
           filter: 'blur(3px) brightness(0.45)',
           transform: 'scale(1.05)',
+          pointerEvents: 'none',
         }} />
 
-        {/* Vignette */}
+        {/* Layer 2 — vignette, pointer-events: none so it never blocks clicks */}
         <div style={{
-          position: 'absolute', inset: 0,
+          position: 'absolute', inset: 0, zIndex: 1,
           background: 'radial-gradient(ellipse at center, rgba(2,8,23,0.15) 0%, rgba(2,8,23,0.45) 100%)',
+          pointerEvents: 'none',
         }} />
 
-        {/* Form card */}
+        {/* Layer 3 — form card */}
         <div
           className="auth-form-container"
           style={{
@@ -141,7 +143,6 @@ const Signin = () => {
           {error && <div className="neu-error">{error}</div>}
 
           <form onSubmit={handleEmailLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
-
             <div>
               <label className="neu-label">Email Address</label>
               <input
@@ -151,14 +152,12 @@ const Signin = () => {
               />
             </div>
 
-            {/* Password with show/hide toggle */}
             <div>
               <label className="neu-label">Password</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type={showPass ? 'text' : 'password'}
-                  required
-                  placeholder="••••••••"
+                  required placeholder="••••••••"
                   className="neu-input"
                   style={{ paddingRight: '2.5rem' }}
                   onChange={e => setPassword(e.target.value)}
@@ -166,7 +165,7 @@ const Signin = () => {
                 <button
                   type="button"
                   onClick={() => setShowPass(p => !p)}
-                  style={toggleBtnStyle}
+                  style={eyeBtn}
                   title={showPass ? 'Hide password' : 'Show password'}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#94a3b8'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#475569'; }}

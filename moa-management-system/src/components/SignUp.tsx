@@ -2,12 +2,30 @@ import { useState } from 'react';
 import { UserAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import neuLogo from '../assets/neu_logo_placeholder.png';
+import neuBg from '../assets/neu-bg-placeholder.jpg';
+
+const EyeOpen = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+);
+
+const EyeOff = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+    <line x1="1" y1="1" x2="23" y2="23"/>
+  </svg>
+);
 
 const Signup = () => {
   const { signUpNewUser } = UserAuth();
-  const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '' });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [formData,    setFormData]    = useState({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '' });
+  const [showPass,    setShowPass]    = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [loading,     setLoading]     = useState(false);
+  const [error,       setError]       = useState('');
   const navigate = useNavigate();
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -38,34 +56,39 @@ const Signup = () => {
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
 
+  const eyeBtn: React.CSSProperties = {
+    position: 'absolute', right: '0.75rem', top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'transparent', border: 'none',
+    color: '#475569', cursor: 'pointer', padding: '0.25rem',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    borderRadius: '0.25rem', lineHeight: 1, zIndex: 5,
+    transition: 'color 0.15s',
+  };
+
   return (
     <div className="neu-page">
 
-      {/* ── Left branding panel — matches SignIn green gradient ── */}
+      {/* ── Left branding panel ── */}
       <div
         className="auth-panel-left"
         style={{ background: 'linear-gradient(160deg, #064e3b 0%, #022c22 100%)' }}
       >
-        {/* Dot grid texture */}
         <div style={{
           position: 'absolute', inset: 0, opacity: 0.07,
           backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
           backgroundSize: '28px 28px',
+          pointerEvents: 'none',
         }} />
 
-        {/* Logo + wordmark */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img
-            src={neuLogo}
-            alt="NEU Logo"
-            style={{ width: '2.5rem', height: '2.5rem', objectFit: 'contain', borderRadius: '0.5rem' }}
-          />
+          <img src={neuLogo} alt="NEU Logo"
+            style={{ width: '2.5rem', height: '2.5rem', objectFit: 'contain', borderRadius: '0.5rem' }} />
           <span style={{ color: 'white', fontWeight: 800, fontSize: '1rem' }}>
             NEU MOA Management System
           </span>
         </div>
 
-        {/* Headline */}
         <div style={{ position: 'relative' }}>
           <h2 style={{ color: 'white', fontSize: '2.25rem', fontWeight: 900, lineHeight: 1.2, margin: '0 0 1rem' }}>
             Join the MOA<br />Management Portal
@@ -75,7 +98,6 @@ const Signup = () => {
           </p>
         </div>
 
-        {/* Feature list */}
         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
           {[
             { icon: '🔑', text: 'Requires an official @neu.edu.ph email' },
@@ -89,18 +111,48 @@ const Signup = () => {
           ))}
         </div>
 
-        {/* Footer note */}
         <div style={{ position: 'relative', color: 'rgba(167,243,208,0.3)', fontSize: '0.72rem' }}>
           © {new Date().getFullYear()} New Era University · All rights reserved
         </div>
       </div>
 
       {/* ── Right form panel ── */}
-      <div className="auth-panel-right">
-        <div className="auth-form-container" style={{ maxWidth: '420px' }}>
+      <div className="auth-panel-right" style={{ position: 'relative', overflow: 'hidden' }}>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <h1 style={{ fontSize: '1.875rem', fontWeight: 900, color: '#f1f5f9', margin: '0 0 0.5rem' }}>
+        {/* Layer 1 — blurred bg image */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 0,
+          backgroundImage: `url(${neuBg})`,
+          backgroundSize: 'cover', backgroundPosition: 'center',
+          filter: 'blur(3px) brightness(0.45)',
+          transform: 'scale(1.05)',
+          pointerEvents: 'none',
+        }} />
+
+        {/* Layer 2 — vignette, pointer-events: none so it never blocks clicks */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          background: 'radial-gradient(ellipse at center, rgba(2,8,23,0.15) 0%, rgba(2,8,23,0.45) 100%)',
+          pointerEvents: 'none',
+        }} />
+
+        {/* Layer 3 — form card */}
+        <div
+          className="auth-form-container"
+          style={{
+            position: 'relative', zIndex: 2,
+            maxWidth: '420px',
+            background: 'rgba(15,23,42,0.82)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: '1.25rem',
+            padding: '2.25rem 2rem',
+            boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
+          }}
+        >
+          <div style={{ marginBottom: '1.75rem' }}>
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f1f5f9', margin: '0 0 0.4rem' }}>
               Create Account
             </h1>
             <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>
@@ -110,7 +162,8 @@ const Signup = () => {
 
           {error && <div className="neu-error">{error}</div>}
 
-          <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <div>
                 <label className="neu-label">First Name</label>
@@ -124,20 +177,60 @@ const Signup = () => {
 
             <div>
               <label className="neu-label">Institutional Email</label>
-              <input type="email" required placeholder="yourname@neu.edu.ph" className="neu-input" onChange={set('email')} />
-              <p style={{ marginTop: '0.375rem', fontSize: '0.72rem', color: '#475569' }}>
+              <input
+                type="email" required placeholder="yourname@neu.edu.ph"
+                className="neu-input"
+                onChange={set('email')}
+              />
+              <p style={{ marginTop: '0.3rem', fontSize: '0.72rem', color: '#475569' }}>
                 Must be an @neu.edu.ph address
               </p>
             </div>
 
             <div>
               <label className="neu-label">Password</label>
-              <input type="password" required placeholder="Minimum 6 characters" className="neu-input" onChange={set('password')} />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  required placeholder="Minimum 6 characters"
+                  className="neu-input"
+                  style={{ paddingRight: '2.5rem' }}
+                  onChange={set('password')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(p => !p)}
+                  style={eyeBtn}
+                  title={showPass ? 'Hide password' : 'Show password'}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#94a3b8'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#475569'; }}
+                >
+                  {showPass ? <EyeOff /> : <EyeOpen />}
+                </button>
+              </div>
             </div>
 
             <div>
               <label className="neu-label">Confirm Password</label>
-              <input type="password" required placeholder="Re-enter password" className="neu-input" onChange={set('confirmPassword')} />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  required placeholder="Re-enter password"
+                  className="neu-input"
+                  style={{ paddingRight: '2.5rem' }}
+                  onChange={set('confirmPassword')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(p => !p)}
+                  style={eyeBtn}
+                  title={showConfirm ? 'Hide password' : 'Show password'}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#94a3b8'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#475569'; }}
+                >
+                  {showConfirm ? <EyeOff /> : <EyeOpen />}
+                </button>
+              </div>
             </div>
 
             <div style={{ paddingTop: '0.25rem' }}>
@@ -148,11 +241,12 @@ const Signup = () => {
           </form>
 
           <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#475569' }}>
-            Already have an account? <Link to="/signin">Sign In</Link>
+            Already have an account?{' '}
+            <Link to="/signin" style={{ color: '#34d399', fontWeight: 700 }}>Sign In</Link>
           </p>
-
         </div>
       </div>
+
     </div>
   );
 };
