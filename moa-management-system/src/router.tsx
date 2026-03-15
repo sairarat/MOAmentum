@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
-import Signin from "./components/Signin";
-import Signup from "./components/Signup"; 
+import Signin from "./components/SignIn";
+import Signup from "./components/SignUp"; 
 import UserDashboard from "./components/UserDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import RoleGuard from "./components/RoleGuard";

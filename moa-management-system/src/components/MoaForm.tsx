@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { UserAuth } from '../context/AuthContext';
-import { logAudit } from './auditLogger';
+import { logAudit } from './AuditLogger';
 
 export interface MoaFormData {
   hteid: string;

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import { UserAuth } from '../context/AuthContext';
-import { logAudit } from './auditLogger';
+import { logAudit } from './AuditLogger';
 import MoaForm from './MoaForm';
 
 // ─── Types ──────────────────────────────────────────────────────────────────

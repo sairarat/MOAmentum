@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { UserAuth } from '../context/AuthContext';
-import { logAudit } from './auditLogger';
+import { logAudit } from './AuditLogger';
 import MoaForm from './MoaForm';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
