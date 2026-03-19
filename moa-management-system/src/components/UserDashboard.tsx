@@ -5,18 +5,6 @@ import type { AppRole } from './RoleGuard';
 import StudentDashboard from './StudentDashboard';
 import StaffDashboard from './StaffDashboard';
 
-/**
- * UserDashboard is a thin role-router.
- *
- * It reads the user's current role from Supabase once on mount and renders
- * the appropriate dashboard component:
- *   - student  →  StudentDashboard  (read-only, approved MOAs only)
- *   - staff    →  StaffDashboard    (full CRUD, all non-deleted MOAs)
- *
- * Each child dashboard ALSO subscribes to real-time role changes on the
- * profiles table, so if an admin promotes/demotes the user mid-session,
- * the user sees a banner and is redirected automatically.
- */
 const UserDashboard = () => {
   const { user } = UserAuth();
   const [role, setRole] = useState<AppRole | null>(null);
@@ -24,11 +12,7 @@ const UserDashboard = () => {
 
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    supabase.from('profiles').select('role').eq('id', user.id).single()
       .then(({ data }) => {
         if (data) setRole(data.role as AppRole);
         setLoading(false);
@@ -38,28 +22,35 @@ const UserDashboard = () => {
   if (loading) {
     return (
       <div style={{
-        minHeight: '100vh', background: '#020817',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100vh',
+        background: 'var(--bg-base, #030712)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'var(--font-sans, DM Sans, system-ui, sans-serif)',
       }}>
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', animation: 'fadeIn 0.3s ease' }}>
+          {/* NEU green spinner */}
           <div style={{
-            width: '2.25rem', height: '2.25rem',
-            border: '2px solid #1e293b', borderTopColor: '#10b981',
-            borderRadius: '50%', animation: 'spin 0.7s linear infinite',
-            margin: '0 auto 0.875rem',
+            width: '3rem', height: '3rem',
+            border: '3px solid rgba(16,185,129,0.15)',
+            borderTopColor: '#10b981',
+            borderRadius: '50%',
+            animation: 'spin 0.75s linear infinite',
+            margin: '0 auto 1.25rem',
           }} />
-          <p style={{ color: '#475569', fontSize: '0.875rem', margin: 0 }}>
-            Loading dashboard…
+          <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: '0 0 0.25rem', fontWeight: 500 }}>
+            Loading your dashboard
+          </p>
+          <p style={{ color: '#374151', fontSize: '0.75rem', margin: 0 }}>
+            Verifying your access level…
           </p>
         </div>
       </div>
     );
   }
 
-  // staff role → full maintainer dashboard
   if (role === 'staff') return <StaffDashboard />;
-
-  // student (and any other non-admin roles) → read-only directory
   return <StudentDashboard />;
 };
 
