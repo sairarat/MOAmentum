@@ -6,31 +6,51 @@ A Memorandum of Agrement(MOA) Management System in tracking the status of Intern
 - **Password** - esperanzaJC@neu.edu.ph
 - **Live Link** - https://mo-amentum-opu1.vercel.app/signin 
 
-# 🚀 MOAmentum
-
-**MOAmentum** is a high-performance framework designed to supercharge **Mixture-of-Agents (MoA)** workflows. By combining the collective intelligence of multiple Large Language Models (LLMs) with an iterative "momentum-based" refinement process, MOAmentum delivers outputs that exceed the capabilities of any single model.
 
 ---
 
-## 💡 The Concept
+## ✨ Core Features
 
-Standard LLM calls are linear. **MOAmentum** is multi-dimensional. It orchestrates a "Council of Agents" where specialized models (**Proposers**) generate diverse perspectives, and a lead model (**Aggregator**) synthesizes them into a final masterpiece. 
+### 👥 Multi-Tier Access Control
+* **Student Dashboard:** View-only access to strictly **APPROVED** MOAs. Students see essential contact and location data for active partners.
+* **Faculty/Maintainer Dashboard:** Granted "Maintainer" rights by Admins to Add, Edit, or Soft-Delete MOA entries. Faculty see all active rows but cannot view internal audit trails.
+* **Admin Command Center:** Full visibility of all rows (including deleted ones). Admins manage user permissions, recover soft-deleted entries, and monitor the system-wide Audit Trail.
+* 
 
-The **"Momentum"** aspect refers to the framework's ability to maintain context and quality across iterative layers, accelerating the path to a high-reasoning response.
+### 🔄 MOA Status Lifecycle
+The system tracks the following granular statuses to ensure clear communication:
+* **APPROVED:** Signed by President | On-going notarization | No notarization needed.
+* **PROCESSING:** Awaiting HTE partner signature | Sent to Legal Office for Review | Sent to VPAA/OP for approval.
 
-## ✨ Key Features
-
-* **Multi-Layer Orchestration**: Stack agents in sequential layers to refine complex reasoning tasks.
-* **Heterogeneous Support**: Seamlessly mix models from **OpenAI, Anthropic, Groq, and Ollama**.
-* **Async Parallelism**: Proposer agents run in parallel, ensuring total latency is minimized.
-* **Momentum Scoring**: Dynamic evaluation of proposer outputs to weight the final aggregation.
-* **Customizable Topology**: Define exactly which models act as proposers and which model acts as the final judge.
+### 📊 Admin Intelligence & Audit
+* **Real-time Stats:** Dashboard cards showing counts for Active, Under Process, and Expired MOAs.
+@@ -30,6 +34,8 @@ The system tracks the following granular statuses to ensure clear communication:
 
 ---
 
-## 🛠️ Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/sairarat/MOAmentum.git](https://github.com/sairarat/MOAmentum.git)
-   cd moa-management-system
+## 🛠️ Technical Requirements
+
+| Requirement | Specification |
+@@ -66,17 +72,12 @@ Follow these steps to set up the environment:
+    cd moa-management-system
+    ```
+
+3.  **Install dependencies:**
+
+
+
+
+
+    ```bash
+    npm install
+    ```
+
+4.  **Configure Environment Variables:**
+    Create a `.env.local` file in the `moa-management-system` folder:
+    ```env
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_id
+    ```
+
+---
+*Developed in requirement for Professional Elective 2 MOA Status Management System: New Era University — Ensuring partnership transparency and institutional accountability.*
